@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Ping Test</title>
+</head>
+<body>
+<h2>Ping Test</h2>
+<script>
+  function sanitizeInput() {
+    let urlInput = document.getElementById("url");
+    let sanitized = urlInput.value.replace(/^(https?:\/\/)/, '').split('/')[0];
+    urlInput.value = sanitized;
+  }
+</script>
+
+<form action="/ping" method="get" onsubmit="sanitizeInput()">
+  <label for="url">Enter Domain or IP:</label>
+  <input type="text" id="url" name="url" required>
+  <button type="submit">Ping Test</button>
+</form>
+<pre th:text="${result}"></pre>
+</body>
+</html>
+
+
+

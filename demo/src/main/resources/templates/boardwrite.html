@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>게시물 작성폼</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .layout {
+      width: 60%; /* 가로를 줄임 */
+      margin: 40px auto;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .layout input[type="text"],
+    .layout textarea,
+    .layout input[type="file"] {
+      width: calc(100% - 20px); /* 가로 여백을 조정 */
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box; /* 폭 계산에 padding 고려 */
+    }
+
+    .layout textarea {a
+    height: 200px; /* textarea를 더 길게 만듦 */
+    }
+
+    .layout button[type="submit"] {
+      width: 100%; /* 버튼을 폭을 100%로 설정하여 가로로 꽉 차게 함 */
+      margin-top: 10px; /* 버튼과의 간격 추가 */
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 0; /* 상하 여백 조정 */
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .layout button[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+<div class="layout">
+  <div style="text-align: right; margin-bottom: 10px;">
+    <a th:href="@{/board/list}"
+       style="display: inline-block;
+       padding: 8px 16px;
+       background-color: #007bff;
+       color: #fff;
+       border-radius: 4px;
+       text-decoration: none;">글 목록</a>
+  </div>
+  <form action="/board/writepro" method="post" enctype="multipart/form-data">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <input name="title" type="text" placeholder="제목을 입력하세요">
+    <textarea name="content" placeholder="내용을 입력하세요"></textarea>
+    <input type="file" name="file">
+    <button type="submit">작성</button>
+
+  </form>
+</div>
+</body>
+</html>
+
+

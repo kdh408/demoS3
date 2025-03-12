@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"
+                xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .layout {
+            width: 80%; /* 가로를 줄임 */
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 30px; /* 내부 여백을 늘림 */
+        }
+
+        .layout input[type="text"] {
+            width: 80%; /* 가로를 줄임 */
+            margin: 10px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px; /* 내부 여백을 늘림 */
+        }
+
+        .layout input[type="password"]{
+            width: 80%; /* 가로를 줄임 */
+            margin: 10px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px; /* 내부 여백을 늘림 */
+        }
+
+        .layout button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 20px; /* 버튼 내부 여백을 늘림 */
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block; /* 버튼을 블록 레벨 요소로 설정하여 가로 폭을 100%로 만듦 */
+            width: 80%; /* 버튼의 가로를 100%로 설정하여 부모 요소에 맞춤 */
+        }
+
+        .layout button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h1>회원 가입</h1>
+<hr>
+
+<form class = "layout" action="/user/signup" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+<!--    <input type="text" name="email" placeholder="이메일 입력해주세요">-->
+<!--    <a th:href="@{/user/idcheck}" >중복확인</a>-->
+    <div>
+        <input type="text" name="email" id="email-input" placeholder="이메일 입력해주세요">
+        <button type="button" onclick="checkDuplicateId()">중복확인</button>
+    </div>
+
+    <input type="text" name="name" placeholder="이름">
+    <input type="password" name="password" placeholder="비밀번호">
+
+    <button id="submit-btn" type="submit" disabled>가입하기</button>
+</form>
+<form class="layout" action="/" method="get">
+    <button type="submit">메인 페이지</button>
+</form>
+
+<script th:inline="javascript">
+    let isEmailVerified = false;
+
+    function checkDuplicateId() {
+        const email = document.getElementById('email-input').value;
+
+        if (!email) {
+            alert('이메일을 입력해주세요');
+            return;
+        }
+
+        // CSRF 토큰 정보를 안전하게 가져옴
+        const csrfToken = /*[[${_csrf.token}]]*/ '';
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+        //const baseUrl = 'http://localhost:8080';
+
+        fetch('/user/idcheck', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({ email: email })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 응답 오류');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // result 값이 true면 이미 존재함(사용 불가), false면 존재하지 않음(사용 가능)
+                const submitButton = document.getElementById('submit-btn');
+                if (data.result === false) {
+                    alert("사용 가능한 이메일입니다.")
+                    isEmailVerified=true;
+                    submitButton.disabled = false;
+                } else {
+                    alert("이미 사용중인 이메일입니다.");
+                    isEmailVerified=false;
+                    submitButton.disabled = true;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("중복 확인 중 오류가 발생했습니다.");
+            });
+    }
+</script>
+</body>
+
+</html>

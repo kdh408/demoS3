@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 상세 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align: right; margin-bottom: 10px;">
+    <a th:href="@{/board/list}"
+       style="display: inline-block;
+       padding: 8px 16px;
+       background-color: #007bff;
+       color: #fff;
+       border-radius: 4px;
+       text-decoration: none;">글 목록</a>
+    </div>
+
+    <h1 th:text="${board.title}"></h1>
+    <p th:text="${board.content}"></p>
+
+    <a sec:authorize="isAuthenticated()" th:if="${#authentication.name == board.user} or ${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/board/delete(id=${board.id})}">글 삭제</a>
+    <a sec:authorize="isAuthenticated()" th:if="${#authentication.name == board.user} or ${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/board/modify/{id}(id=${board.id})}">수정</a>
+    <a th:href="@{${board.filepath}}">파일보기</a> <!--한글 인코딩 안됨-->
+    <img th:src="@{${board.filepath}}" alt="no image"/>
+</div>
+</body>
+</html>
