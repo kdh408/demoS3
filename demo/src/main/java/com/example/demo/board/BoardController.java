@@ -21,7 +21,7 @@ public class BoardController {
 
     @GetMapping("/board/write")    //게시글 작성 폼을 보여주는 역할
     public String boardWriteForm() {
-        return "/boardwrite";
+        return "boardwrite";
     }
 
     @PostMapping("/board/writepro") //게시글 작성을 처리하고 작성 완료 메시지와 함께 메시지 페이지로 이동
@@ -34,7 +34,7 @@ public class BoardController {
         model.addAttribute("message", "글 작성 완료");
         model.addAttribute("searchUrl", "/board/list");
 
-        return "/message";
+        return "message";
     }
 
     @GetMapping("/board/list")  //게시글 목록을 보여주는 페이지로 이동
@@ -51,7 +51,7 @@ public class BoardController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        return "/boardlist";
+        return "boardlist";
     }
 
     @GetMapping("/board/view") // localhost:8080/board/view?id=1 특정 게시글의 내용을 보여주는 페이지로 이동

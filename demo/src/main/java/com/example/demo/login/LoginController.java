@@ -23,7 +23,7 @@ public class LoginController {
     // 회원가입 페이지
     @GetMapping("/user/signup")
     public String dispSignup() {
-        return "/signup";
+        return "signup";
     }
 
     // 회원가입 처리
@@ -37,7 +37,7 @@ public class LoginController {
     // 로그인 페이지
     @GetMapping("/user/login")
     public String dispLogin() {
-        return "/login";
+        return "login";
     }
 
     // 로그인 결과 페이지
@@ -49,7 +49,7 @@ public class LoginController {
     // 로그아웃 결과 페이지
     @GetMapping("/user/logout/result")
     public String dispLogout() {
-        return "/logout";
+        return "logout";
     }
 
     //admin 회원관리 페이지
@@ -57,7 +57,7 @@ public class LoginController {
     public String userAdmin(Model model){
         List<Login> login = loginService.findAllMembers();
         model.addAttribute("login", login);
-        return "/admin";
+        return "admin";
     }
 
     @GetMapping("/user/delete/{id}")

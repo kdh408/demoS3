@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 public class PingController {
@@ -20,12 +21,13 @@ public class PingController {
 
             try {
                 //linux : ping -c 4
-                ProcessBuilder processBuilder = new ProcessBuilder("ping", "-n", "4", url);
+                ProcessBuilder processBuilder = new ProcessBuilder("ping", "-c", "4", url);
                 Process process = processBuilder.start();
 
                 //window:MS949  linux:UTF_8
                 //Charset encoding = isWindows ? Charset.forName("MS949") : StandardCharsets.UTF_8;
-                Charset encoding = Charset.forName("MS949");
+                //Charset encoding = Charset.forName("MS949");
+                Charset encoding = StandardCharsets.UTF_8;
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),encoding));
                 StringBuilder output = new StringBuilder();
@@ -39,7 +41,7 @@ public class PingController {
                 model.addAttribute("result", "Ping failed: " + e.getMessage());
             }
         }
-        return "/pingtest";
+        return "pingtest";
     }
 }
 
