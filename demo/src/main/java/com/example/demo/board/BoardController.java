@@ -79,12 +79,16 @@ public class BoardController {
 
     @PostMapping("/board/update/{id}")  //특정 게시글을 수정하고, 수정 완료 메시지와 함께 메시지 페이지로 이동
     public String boardUpdate(@PathVariable("id") Integer id, Board board, Model model, @RequestParam("file") MultipartFile file) throws Exception {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        String email = userDetails.getUsername();
 
         Board boardTemp = boardService.boardView(id);
         boardTemp.setTitle(board.getTitle());
         boardTemp.setContent(board.getContent());
+        boardTemp.setFilepath(board.getFilepath());
 
-//        boardService.write(boardTemp, file);
+        boardService.write(boardTemp, file,email);
         model.addAttribute("message", "글 수정 완료");
         model.addAttribute("searchUrl", "/board/list");
 

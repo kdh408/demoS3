@@ -36,12 +36,14 @@ public class BoardService {
 
         file.transferTo(saveFile);
 */
-        String imgURL = s3Uploader.upload(file);
+        ;
+
         board.setUser(email);
         String name = loginRepository.findByEmail(email).get().getName().toString();
         board.setWriter(name);
 
         //board.setFilename(imgURL);
+        String imgURL = s3Uploader.upload(file);
         board.setFilepath(imgURL);
 
         boardRepository.save(board);
