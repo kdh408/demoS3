@@ -18,6 +18,8 @@ public class BoardController {
 
     @Autowired  //의존성 주입.
     private BoardService boardService;
+    @Autowired
+    private BoardRepository boardRepository;
 
     @GetMapping("/board/write")    //게시글 작성 폼을 보여주는 역할
     public String boardWriteForm() {
@@ -29,6 +31,7 @@ public class BoardController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
         String email = userDetails.getUsername();
+
         boardService.write(board, file,email);
 
         model.addAttribute("message", "글 작성 완료");
@@ -63,10 +66,26 @@ public class BoardController {
     }
 
     @GetMapping("/board/delete")    //특정 게시글을 삭제하고, 게시글 목록 페이지로 리다이렉트
-    public String boardDelete(@RequestParam("id") Integer id) {
-        boardService.boardDelete(id);
+    public String boardDelete(@RequestParam("id") Integer id, Board board) {
+        //로그인 계정 받아오기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return "redirect:/board/list";
+        if (principal == null || !(principal instanceof UserDetails)) {
+            return "redirect:/user/denied";
+        }
+
+        UserDetails userDetails = (UserDetails) principal;
+        String login_email = userDetails.getUsername().toString();
+
+        //게시글 작성자 계정 받아오기
+        Board boardTemp = boardService.boardView(id);
+        String write_email = boardTemp.getUser();
+
+        Integer result= boardService.boardDelete(id,write_email,login_email);
+        if(result==1){
+            return "redirect:/board/list";
+        }else return "redirect:/user/denied";
+
     }
 
     @GetMapping("/board/modify/{id}")   //특정 게시글을 수정하기 위한 수정 폼
@@ -80,18 +99,29 @@ public class BoardController {
     @PostMapping("/board/update/{id}")  //특정 게시글을 수정하고, 수정 완료 메시지와 함께 메시지 페이지로 이동
     public String boardUpdate(@PathVariable("id") Integer id, Board board, Model model, @RequestParam("file") MultipartFile file) throws Exception {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal == null || !(principal instanceof UserDetails)) {
+            return "redirect:/user/denied";
+        }
+
         UserDetails userDetails = (UserDetails) principal;
-        String email = userDetails.getUsername();
+        String login_email = userDetails.getUsername().toString();
 
         Board boardTemp = boardService.boardView(id);
+        boardTemp.setId(board.getId());
         boardTemp.setTitle(board.getTitle());
         boardTemp.setContent(board.getContent());
-        boardTemp.setFilepath(board.getFilepath());
 
-        boardService.write(boardTemp, file,email);
+
+        Integer result=boardService.modify(boardTemp, file,login_email);
         model.addAttribute("message", "글 수정 완료");
         model.addAttribute("searchUrl", "/board/list");
+        
+        if(result==1){
+            return "message";    
+        } else {
+            return "redirect:/user/denied";
+        }
 
-        return "message";
     }
 }

@@ -21,8 +21,10 @@ public class PingController {
 
             try {
                 //linux : ping -c 4
-                ProcessBuilder processBuilder = new ProcessBuilder("ping", "-c", "4", url);
-                Process process = processBuilder.start();
+                //ProcessBuilder processBuilder = new ProcessBuilder("ping", "-c", "4", url);
+                //Process process = processBuilder.start();
+
+                Process process = Runtime.getRuntime().exec("ping " + url);
 
                 //window:MS949  linux:UTF_8
                 //Charset encoding = isWindows ? Charset.forName("MS949") : StandardCharsets.UTF_8;

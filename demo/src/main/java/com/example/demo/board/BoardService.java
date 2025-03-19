@@ -21,10 +21,10 @@ public class BoardService {
     @Autowired
     private S3Uploader s3Uploader;
 
-    //글 작성 처리
+    //글 작성
     public void write(Board board, MultipartFile file, String email) throws Exception {
 
-       /* String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
+       /* String projectPath = "/test";    ///도커 내 test 파일 생성하면 되지 않을까
 
         UUID uuid = UUID.randomUUID();
 
@@ -36,7 +36,6 @@ public class BoardService {
 
         file.transferTo(saveFile);
 */
-        ;
 
         board.setUser(email);
         String name = loginRepository.findByEmail(email).get().getName().toString();
@@ -47,6 +46,24 @@ public class BoardService {
         board.setFilepath(imgURL);
 
         boardRepository.save(board);
+
+    }
+
+    //글 수정
+    public Integer modify(Board board, MultipartFile file, String login_email) throws Exception {
+        String write_email = board.getUser();
+
+        if (write_email.equals(login_email)) {
+
+            String imgURL = s3Uploader.upload(file);
+            board.setFilepath(imgURL);
+
+            boardRepository.save(board);
+
+            return 1;
+        } else{
+            return 0;
+        }
 
     }
 
@@ -64,7 +81,13 @@ public class BoardService {
     }
 
 
-    public void boardDelete(Integer id) {
-        boardRepository.deleteById(id);
+    public Integer boardDelete(Integer id, String write_email, String login_email) {
+        if (write_email.equals(login_email)) {
+            boardRepository.deleteById(id);
+            return 1;
+        } else{
+            return 0;
+        }
+
     }
 }

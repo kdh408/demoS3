@@ -66,18 +66,17 @@ public class LoginController {
 
         return "redirect:/user/admin";
     }
-  /*  // 접근 거부 페이지
+
     @GetMapping("/user/denied")
     public String dispDenied() {
         return "/denied";
     }
 
-    // 내 정보 페이지
+    // 비밀번호 수정
     @GetMapping("/user/info")
     public String dispMyInfo() {
         return "/myinfo";
     }
-    */
 
 
 }

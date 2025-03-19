@@ -33,7 +33,6 @@ public class LoginService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
         Optional<Login> userEntityWrapper = loginRepository.findByEmail(userEmail);
-        //Login userEntity = userEntityWrapper.get();
         Login userEntity = userEntityWrapper.orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
 
         List<GrantedAuthority> authorities = new ArrayList<>();
