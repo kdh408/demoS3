@@ -25,8 +25,13 @@ public class BoardService {
     public void write(Board board, MultipartFile file, String email) throws Exception {
 
        /* String projectPath = "/test";    ///도커 내 test 파일 생성하면 되지 않을까
+        */
 
-        UUID uuid = UUID.randomUUID();
+        /*파일 경로 이걸로 설정해서 해보라
+        String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
+        */
+
+/*        UUID uuid = UUID.randomUUID();
 
         String fileName = uuid + "_" + file.getOriginalFilename();
 

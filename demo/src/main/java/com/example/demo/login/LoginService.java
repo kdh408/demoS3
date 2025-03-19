@@ -1,5 +1,6 @@
 package com.example.demo.login;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -23,6 +25,12 @@ public class LoginService implements UserDetailsService {
 
     @Transactional
     public Long joinUser(LoginDto loginDto) {
+        //중복확인
+        String email = loginDto.getEmail();
+        if (loginRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
+
         // 비밀번호 암호화
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         loginDto.setPassword(passwordEncoder.encode(loginDto.getPassword()));
@@ -66,5 +74,17 @@ public class LoginService implements UserDetailsService {
         HashMap<String, Object> map = new HashMap<>();
         map.put("result", loginRepository.existsByName(username));
         return map;
+    }
+
+    public static void alert(HttpServletResponse response, String msg) {
+        try {
+            response.setContentType("text/html; charset=utf-8");
+            PrintWriter w = response.getWriter();
+            w.write("<script>alert('"+msg+"');history.go(-1);</script>");
+            w.flush();
+            w.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

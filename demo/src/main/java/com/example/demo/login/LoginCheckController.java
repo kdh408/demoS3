@@ -12,7 +12,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class LoginCheckController {
 
-
     private LoginService loginService;
 
     @PostMapping("/user/idcheck")

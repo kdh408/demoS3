@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+
 @Controller
 @AllArgsConstructor
 public class LoginController {
@@ -29,6 +31,15 @@ public class LoginController {
     // 회원가입 처리
     @PostMapping("/user/signup")
     public String execSignup(LoginDto loginDto) {
+        System.out.println("Email"+loginDto.getEmail());
+        System.out.println("Name"+loginDto.getName());
+        System.out.println("pw"+loginDto.getPassword());
+
+        if(loginDto.getEmail() == null || loginDto.getPassword() == "" || loginDto.getName() == "") {
+            //loginService.alert(SC_INTERNAL_SERVER_ERROR,"cannot singup");
+            throw new IllegalArgumentException("회원가입 불가능");//"loginDto cannot be null");
+        }
+
         loginService.joinUser(loginDto);
 
         return "redirect:/user/login";

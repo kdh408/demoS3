@@ -64,21 +64,20 @@
 <form class = "layout" action="/user/signup" method="post">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-<!--    <input type="text" name="email" placeholder="이메일 입력해주세요">-->
-<!--    <a th:href="@{/user/idcheck}" >중복확인</a>-->
     <div>
-        <input type="text" name="email" id="email-input" placeholder="이메일 입력해주세요">
+        <input type="text" name="email" id="email-input" placeholder="이메일 입력해주세요" required/>
         <button type="button" onclick="checkDuplicateId()">중복확인</button>
     </div>
 
-    <input type="text" name="name" placeholder="이름">
-    <input type="password" name="password" placeholder="비밀번호">
+    <input type="text" name="name" placeholder="이름" required/>
+    <input type="password" name="password" placeholder="비밀번호" required/>
 
     <button id="submit-btn" type="submit" disabled>가입하기</button>
 </form>
 <form class="layout" action="/" method="get">
     <button type="submit">메인 페이지</button>
 </form>
+
 
 <script th:inline="javascript">
     let isEmailVerified = false;
@@ -94,7 +93,6 @@
         // CSRF 토큰 정보를 안전하게 가져옴
         const csrfToken = /*[[${_csrf.token}]]*/ '';
         const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
-        //const baseUrl = 'http://localhost:8080';
 
         fetch('/user/idcheck', {
             method: 'POST',
