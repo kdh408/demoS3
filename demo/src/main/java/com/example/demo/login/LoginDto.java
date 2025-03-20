@@ -22,6 +22,8 @@ public class LoginDto {
                 .email(email)
                 .name(name)
                 .password(password)
+                .failedAttempts(0)
+                .locked(false)
                 .build();
     }
 

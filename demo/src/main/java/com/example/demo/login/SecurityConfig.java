@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,6 +28,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
     //    private final HttpSecurity httpSecurity;
     private LoginService loginService;
+    @Autowired
+    private customAuthenticationFailureHandler FailureHandler;
+    @Autowired
+    private customAuthenticationSuccessHandler SuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -61,7 +66,9 @@ public class SecurityConfig {
         http.formLogin(form ->
                 form
                         .loginPage("/user/login")
-                        .defaultSuccessUrl("/user/login/result")
+                        //.defaultSuccessUrl("/user/login/result")
+                        .successHandler(SuccessHandler)
+                        .failureHandler(FailureHandler)
                         .permitAll()
         );
 
