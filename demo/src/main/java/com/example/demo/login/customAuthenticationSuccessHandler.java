@@ -24,6 +24,7 @@ public class customAuthenticationSuccessHandler implements AuthenticationSuccess
                 .orElseThrow(()->new UsernameNotFoundException("Invalid username or password"));
 
         if (user.getLocked() || user.getFailedAttempts() >= 5) {
+            request.getSession().invalidate();
             request.getSession().setAttribute("errorMessage", "계정 잠김. 관리자에게 문의 바람");
             response.sendRedirect("/user/login");
         }else{
