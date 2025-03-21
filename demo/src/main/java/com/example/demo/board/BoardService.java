@@ -18,37 +18,34 @@ public class BoardService {
     private BoardRepository boardRepository;
     @Autowired
     private LoginRepository loginRepository;
-    @Autowired
-    private S3Uploader s3Uploader;
+    //@Autowired
+    //private S3Uploader s3Uploader;
 
     //글 작성
     public void write(Board board, MultipartFile file, String email) throws Exception {
 
-       /* String projectPath = "/test";    ///도커 내 test 파일 생성하면 되지 않을까
-        */
+        //String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
 
-        /*파일 경로 이걸로 설정해서 해보라
-        String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
-        */
+        String projectPath = "/app/src/main/resources/static/files";
 
-/*        UUID uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
 
-        String fileName = uuid + "_" + file.getOriginalFilename();
-
-        System.out.println("filename ==>");
+        String fileName = uuid+ "_";
 
         File saveFile = new File(projectPath, fileName);
 
         file.transferTo(saveFile);
-*/
+
+        board.setFilepath("/files/" +fileName);
+
 
         board.setUser(email);
         String name = loginRepository.findByEmail(email).get().getName().toString();
         board.setWriter(name);
 
-        //board.setFilename(imgURL);
-        String imgURL = s3Uploader.upload(file);
-        board.setFilepath(imgURL);
+        //s3 Upload
+        //String imgURL = s3Uploader.upload(file);
+        //board.setFilepath(imgURL);
 
         boardRepository.save(board);
 
@@ -60,8 +57,17 @@ public class BoardService {
 
         if (write_email.equals(login_email)) {
 
-            String imgURL = s3Uploader.upload(file);
-            board.setFilepath(imgURL);
+            String projectPath = "/app/src/main/resources/static/files";
+
+            UUID uuid = UUID.randomUUID();
+
+            String fileName = uuid+ "_";
+
+            File saveFile = new File(projectPath, fileName);
+
+            file.transferTo(saveFile);
+
+            board.setFilepath("/files/" +fileName);
 
             boardRepository.save(board);
 
