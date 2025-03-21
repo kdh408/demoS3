@@ -71,9 +71,15 @@
 
     <input type="text" name="name" placeholder="이름" required/>
     <input type="password" name="password" placeholder="비밀번호" required/>
+    <input type="password" name="passwordcheck" placeholder="비밀번호 확인" required/>
 
     <button id="submit-btn" type="submit" disabled>가입하기</button>
 </form>
+
+<div th:if="${session.errorMessage}" style="color: red;">
+    <p th:text="${session.errorMessage}"></p>
+</div>
+
 <form class="layout" action="/" method="get">
     <button type="submit">메인 페이지</button>
 </form>

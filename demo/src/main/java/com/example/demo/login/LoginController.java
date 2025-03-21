@@ -1,5 +1,6 @@
 package com.example.demo.login;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,14 +36,19 @@ public class LoginController {
         System.out.println("Name"+loginDto.getName());
         System.out.println("pw"+loginDto.getPassword());
 
-        if(loginDto.getEmail() == null || loginDto.getPassword() == "" || loginDto.getName() == "") {
+        if(loginDto.getEmail() == "" || loginDto.getPassword() == "" || loginDto.getName() == "") {
             //loginService.alert(SC_INTERNAL_SERVER_ERROR,"cannot singup");
             throw new IllegalArgumentException("회원가입 불가능");//"loginDto cannot be null");
         }
 
-        loginService.joinUser(loginDto);
+        Long result=loginService.joinUser(loginDto);
+        if (result==null) {
+            return "redirect:/user/signup";
+        }else {
+            return "redirect:/user/login";
+        }
 
-        return "redirect:/user/login";
+
     }
 
     // 로그인 페이지

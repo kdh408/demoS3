@@ -15,6 +15,7 @@ public class LoginDto {
     private String password;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+    private String passwordCheck;
 
     public Login toEntity(){
         return Login.builder()
@@ -28,10 +29,11 @@ public class LoginDto {
     }
 
     @Builder
-    public LoginDto(Long id, String email, String name, String password) {
+    public LoginDto(Long id, String email, String name, String password, String passwordCheck) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
+        this.passwordCheck = passwordCheck;
     }
 }

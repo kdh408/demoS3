@@ -1,5 +1,6 @@
 package com.example.demo.login;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,18 +18,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
 public class LoginService implements UserDetailsService {
     private LoginRepository loginRepository;
+    HttpServletRequest request;
 
     @Transactional
     public Long joinUser(LoginDto loginDto) {
-        //중복확인
+
         String email = loginDto.getEmail();
+
+        if (!isValidEmail(email)) {
+            request.getSession().setAttribute("errorMessage", "유효한 이메일이 아닙니다.");
+            return null;
+        }
+
+        if (!loginDto.getPassword().equals(loginDto.getPasswordCheck())) {
+            request.getSession().setAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
+            return null;
+        }
+
+        //중복확인
         if (loginRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+            request.getSession().setAttribute("errorMessage", "이미 사용 중인 이메일입니다.");
+            return null;
         }
 
         // 비밀번호 암호화
@@ -55,6 +71,11 @@ public class LoginService implements UserDetailsService {
 
     }
 
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        return Pattern.matches(emailRegex, email);
+    }
+
     public List<Login> findAllMembers() {
         return loginRepository.findAll();
     }
@@ -76,15 +97,4 @@ public class LoginService implements UserDetailsService {
         return map;
     }
 
-    public static void alert(HttpServletResponse response, String msg) {
-        try {
-            response.setContentType("text/html; charset=utf-8");
-            PrintWriter w = response.getWriter();
-            w.write("<script>alert('"+msg+"');history.go(-1);</script>");
-            w.flush();
-            w.close();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
