@@ -86,13 +86,13 @@ public class LoginController {
 
     @GetMapping("/user/denied")
     public String dispDenied() {
-        return "/denied";
+        return "denied";
     }
 
     // 비밀번호 수정
     @GetMapping("/user/info")
     public String dispMyInfo() {
-        return "/myinfo";
+        return "myinfo";
     }
 
 
