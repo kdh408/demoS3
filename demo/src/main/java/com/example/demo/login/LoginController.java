@@ -32,10 +32,6 @@ public class LoginController {
     // 회원가입 처리
     @PostMapping("/user/signup")
     public String execSignup(LoginDto loginDto) {
-        System.out.println("Email"+loginDto.getEmail());
-        System.out.println("Name"+loginDto.getName());
-        System.out.println("pw"+loginDto.getPassword());
-
         if(loginDto.getEmail() == "" || loginDto.getPassword() == "" || loginDto.getName() == "") {
             //loginService.alert(SC_INTERNAL_SERVER_ERROR,"cannot singup");
             throw new IllegalArgumentException("회원가입 불가능");//"loginDto cannot be null");
