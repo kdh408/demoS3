@@ -36,16 +36,18 @@ public class LoginService implements UserDetailsService {
             return null;
         }
 
-        if (!loginDto.getPassword().equals(loginDto.getPasswordCheck())) {
-            request.getSession().setAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
-            return null;
-        }
-
         //중복확인
         if (loginRepository.existsByEmail(email)) {
             request.getSession().setAttribute("errorMessage", "이미 사용 중인 이메일입니다.");
             return null;
         }
+
+        if (!loginDto.getPassword().equals(loginDto.getPasswordCheck())) {
+            request.getSession().setAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
+            return null;
+        }
+
+
 
         // 비밀번호 암호화
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
