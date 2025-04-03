@@ -2,7 +2,7 @@ version: "3"
 services:
   api:
     container_name: "demo"
-    image: dhk01/demo:serversave
+    image: dhk01/demo:fileDownload
     build:
       context: .
       dockerfile: Dockerfile.demo
