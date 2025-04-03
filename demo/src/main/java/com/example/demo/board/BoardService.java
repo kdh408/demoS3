@@ -18,26 +18,28 @@ public class BoardService {
     private BoardRepository boardRepository;
     @Autowired
     private LoginRepository loginRepository;
-    @Autowired
-    private S3Uploader s3Uploader;
+    //@Autowired
+    //private S3Uploader s3Uploader;
 
     //글 작성
     public void write(Board board, MultipartFile file, String email) throws Exception {
 
         //String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
 
-        //if (file.getOriginalFilename().length() > 0 ) {} 이거 추가하기
-        /*//String projectPath = "/app/src/main/resources/static/files";
+        if (file.getOriginalFilename().length() > 0 ) {
+            String projectPath = "/app/src/main/resources/static/files";
 
-        UUID uuid = UUID.randomUUID();
+            //UUID uuid = UUID.randomUUID();
+            //String fileName = uuid+ "_"+file.getOriginalFilename();
+            String fileName = board.getId()+ "_" +file.getOriginalFilename();
+            File saveFile = new File(projectPath, fileName);
 
-        String fileName = uuid+ "_"+file.getOriginalFilename();
+            file.transferTo(saveFile);
 
-        File saveFile = new File(projectPath, fileName);
+            board.setFilename(file.getOriginalFilename());
+            board.setFilepath("/files/" +fileName);
 
-        file.transferTo(saveFile);
-
-        board.setFilepath("/files/" +fileName);*/
+        }
 
         System.out.println("파일 제목: "+file.getOriginalFilename());
         board.setUser(email);
@@ -45,11 +47,10 @@ public class BoardService {
         board.setWriter(name);
 
         //s3 Upload
-        if (file.getOriginalFilename().length() > 0 ) {
-            System.out.println("파일 업로드 중..."+file.getOriginalFilename());
+        /*if (file.getOriginalFilename().length() > 0 ) {
             String imgURL = s3Uploader.upload(file);
             board.setFilepath(imgURL);
-        }
+        }*/
 
         boardRepository.save(board);
 
@@ -62,26 +63,20 @@ public class BoardService {
         if (write_email.equals(login_email)) {
 
             //String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
-            /*//String projectPath = "/app/src/main/resources/static/files";
-
-            UUID uuid = UUID.randomUUID();
-
-            String fileName = uuid+ "_"+file.getOriginalFilename();
-
-            File saveFile = new File(projectPath, fileName);
-
-            file.transferTo(saveFile);
-
-            board.setFilepath("/files/" +fileName);*/
-
-            //s3 Upload
             if (file.getOriginalFilename().length() > 0 ) {
-                String imgURL = s3Uploader.upload(file);
-                board.setFilepath(imgURL);
+                String projectPath = "/app/src/main/resources/static/files";
+
+                String fileName = board.getId()+ "_" +file.getOriginalFilename();
+                File saveFile = new File(projectPath, fileName);
+
+                file.transferTo(saveFile);
+
+                board.setFilename(file.getOriginalFilename());
+                board.setFilepath("/files/" +fileName);
+
             }
 
             boardRepository.save(board);
-
             return 1;
         } else{
             return 0;

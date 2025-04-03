@@ -70,6 +70,17 @@
     <input name="title" type="text" th:value="${board.title}" placeholder="제목을 입력하세요">
     <textarea name="content" placeholder="내용을 입력하세요" th:text="${board.content}"></textarea>
     <input type="file" name="file">
+
+    <th:block th:if="${board.filename}">
+      <span>현재 업로드 된 파일: </span>
+      <a th:text="${board.getFilename()}"></a>
+    </th:block>
+    <th:block th:unless="${board.filename}">
+      <span>현재 업로드된 파일 없음</span>
+    </th:block>
+
+
+
     <button type="submit">수정</button>
   </form>
 </div>

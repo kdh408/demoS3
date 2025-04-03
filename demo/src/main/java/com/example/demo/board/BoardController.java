@@ -1,16 +1,27 @@
 package com.example.demo.board;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 @Controller//컨트롤러로 인식
@@ -107,10 +118,12 @@ public class BoardController {
         UserDetails userDetails = (UserDetails) principal;
         String login_email = userDetails.getUsername().toString();
 
+        System.out.println("첨부파일: "+board.getFilepath());
         Board boardTemp = boardService.boardView(id);
         boardTemp.setId(board.getId());
         boardTemp.setTitle(board.getTitle());
         boardTemp.setContent(board.getContent());
+        boardTemp.setFilepath(board.getFilepath());
 
 
         Integer result=boardService.modify(boardTemp, file,login_email);
@@ -123,5 +136,29 @@ public class BoardController {
             return "redirect:/user/denied";
         }
 
+    }
+
+    //파일 다운로드
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Integer id) throws MalformedURLException {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        String filePath = "/app/src/main/resources/static" + board.getFilepath();
+        Path path = Paths.get(filePath);
+        Resource resource = new UrlResource(path.toUri());
+
+        if (!resource.exists()) {
+            throw new RuntimeException("파일을 찾을 수 없습니다.");
+        }
+
+        String originalFileName = resource.getFilename();
+        String encodedFileName = URLEncoder.encode(originalFileName, StandardCharsets.UTF_8)
+                .replaceAll("\\+", "%20");
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
+                .body(resource);
     }
 }

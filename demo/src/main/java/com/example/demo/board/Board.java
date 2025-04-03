@@ -23,14 +23,11 @@ public class Board {
 
     private String content;
 
-  //  private String filename;
+    private String filename;
 
     private String filepath;
 
     private String user;
 
     private String writer;
-
-    public void setFilename(String fileName) {
-    }
 }
