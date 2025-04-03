@@ -144,7 +144,8 @@ public class BoardController {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        String filePath = "/app/src/main/resources/static" + board.getFilepath();
+        String filePath = System.getProperty("user.dir")+"/src/main/resources/static"+board.getFilepath();
+        //String filePath = "/app/src/main/resources/static" + board.getFilepath();
         Path path = Paths.get(filePath);
         Resource resource = new UrlResource(path.toUri());
 

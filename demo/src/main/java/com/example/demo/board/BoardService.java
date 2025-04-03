@@ -24,14 +24,15 @@ public class BoardService {
     //글 작성
     public void write(Board board, MultipartFile file, String email) throws Exception {
 
-        //String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
+        String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
 
         if (file.getOriginalFilename().length() > 0 ) {
-            String projectPath = "/app/src/main/resources/static/files";
+            //String projectPath = "/app/src/main/resources/static/files";
 
             //UUID uuid = UUID.randomUUID();
             //String fileName = uuid+ "_"+file.getOriginalFilename();
-            String fileName = board.getId()+ "_" +file.getOriginalFilename();
+            //String fileName = board.getId()+ "_" +file.getOriginalFilename();
+            String fileName = file.getOriginalFilename();
             File saveFile = new File(projectPath, fileName);
 
             file.transferTo(saveFile);
@@ -62,11 +63,11 @@ public class BoardService {
 
         if (write_email.equals(login_email)) {
 
-            //String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
+            String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
             if (file.getOriginalFilename().length() > 0 ) {
-                String projectPath = "/app/src/main/resources/static/files";
+                //String projectPath = "/app/src/main/resources/static/files";
 
-                String fileName = board.getId()+ "_" +file.getOriginalFilename();
+                String fileName = file.getOriginalFilename();
                 File saveFile = new File(projectPath, fileName);
 
                 file.transferTo(saveFile);
