@@ -74,6 +74,8 @@ public class BoardService {
                 board.setFilename(file.getOriginalFilename());
                 board.setFilepath("/files/" +fileName);
 
+            }else{
+                board.setFilename(file.getOriginalFilename());
             }
 
             boardRepository.save(board);

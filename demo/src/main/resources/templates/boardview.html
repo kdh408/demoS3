@@ -61,7 +61,9 @@
 
     <a sec:authorize="isAuthenticated()" th:if="${#authentication.name == board.user} or ${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/board/delete(id=${board.id})}">글 삭제</a>
     <a sec:authorize="isAuthenticated()" th:if="${#authentication.name == board.user} or ${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/board/modify/{id}(id=${board.id})}">수정</a>
+
     <th:block th:if="${board.filepath}">
+        <span th:text="${board.filename}"/>
         <a th:href="@{/download/{id}(id=${board.id})}">파일 다운로드</a>
     </th:block>
     <th:block th:unless="${board.filepath}">
