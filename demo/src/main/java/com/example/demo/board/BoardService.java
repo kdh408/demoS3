@@ -110,4 +110,21 @@ public class BoardService {
         }
 
     }
+
+    public String sanitizePath(String filePath) {
+        // 1. 경로에서 URL 인코딩된 ./, ../, \, %2E, %2F 등을 필터링
+        // %2F (%2F는 '/'), %2E (%2E는 '.') 등의 패턴을 제거
+        filePath = filePath.replaceAll("%2F", "/")  // %2F -> /
+                .replaceAll("%2E", ".")  // %2E -> .
+                .replaceAll("%5C", "")    // %5C -> \ 제거
+                .replaceAll("\\.\\./", "") // ../ 등 디렉토리 탐색 제거
+                .replaceAll("/\\./", "")   // ./ 등 상대 경로 제거
+                .replaceAll("//", "/");    // 연속된 '/'를 하나로 변환
+
+        // 경로에서 `..`이나 `.`과 같은 상대경로 요소가 있으면 제거
+        filePath = filePath.replaceAll("\\.\\.", "")  // ".." 제거
+                .replaceAll("\\./", "/");  // "./" 제거
+
+        return filePath;
+    }
 }

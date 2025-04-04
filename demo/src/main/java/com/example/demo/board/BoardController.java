@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -141,12 +142,29 @@ public class BoardController {
     //파일 다운로드
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource> downloadFile(@PathVariable Integer id) throws MalformedURLException {
+
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
+        if(board.getUser().equals("admin@example.com")){
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            if (principal == null || !(principal instanceof UserDetails)) {
+                throw new IllegalArgumentException("다운로드 권한 없음.");
+            }
+        }
+
         String filePath = System.getProperty("user.dir")+"/src/main/resources/static"+board.getFilepath();
-        //String filePath = "/app/src/main/resources/static" + board.getFilepath();
-        Path path = Paths.get(filePath);
+        //String filePath = "/app/src/main/resources/static" + board.getFilepath(); //EC2
+
+        //인코딩된 문자열 필터링
+        /*String decocdedFilepath = URLDecoder.decode(filePath, StandardCharsets.UTF_8);
+        System.out.println("decodedFilePath: "+decocdedFilepath);
+        String sanitizedFilepath = boardService.sanitizePath(filePath);
+        System.out.println("sanitizedFilePath: "+sanitizedFilepath);
+        Path path=Paths.get(sanitizedFilepath).normalize();*/
+        Path path=Paths.get(filePath).normalize();
+
         Resource resource = new UrlResource(path.toUri());
 
         if (!resource.exists()) {
