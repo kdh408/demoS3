@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -119,7 +118,6 @@ public class BoardController {
         UserDetails userDetails = (UserDetails) principal;
         String login_email = userDetails.getUsername().toString();
 
-        System.out.println("첨부파일: "+board.getFilepath());
         Board boardTemp = boardService.boardView(id);
         boardTemp.setId(board.getId());
         boardTemp.setTitle(board.getTitle());
@@ -157,12 +155,6 @@ public class BoardController {
         String filePath = System.getProperty("user.dir")+"/src/main/resources/static"+board.getFilepath();
         //String filePath = "/app/src/main/resources/static" + board.getFilepath(); //EC2
 
-        //인코딩된 문자열 필터링
-        /*String decocdedFilepath = URLDecoder.decode(filePath, StandardCharsets.UTF_8);
-        System.out.println("decodedFilePath: "+decocdedFilepath);
-        String sanitizedFilepath = boardService.sanitizePath(filePath);
-        System.out.println("sanitizedFilePath: "+sanitizedFilepath);
-        Path path=Paths.get(sanitizedFilepath).normalize();*/
         Path path=Paths.get(filePath).normalize();
 
         Resource resource = new UrlResource(path.toUri());
