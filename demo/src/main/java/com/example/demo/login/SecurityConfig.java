@@ -1,25 +1,16 @@
 package com.example.demo.login;
 
-import com.example.demo.login.LoginService;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -69,11 +60,27 @@ public class SecurityConfig {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                         .logoutSuccessUrl("/user/logout/result")
                         .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true)
         );
 
         http.exceptionHandling(form ->
                 form.accessDeniedPage("/user/denied")
         );
+
+        //http.addFilterAfter(new SecurityHeadersFilter(), SecurityContextPersistenceFilter.class);
+
+        http.headers(headers ->
+                headers
+                        //https인 경우 설정 필요 .httpStrictTransportSecurity()
+                        .contentTypeOptions(contentType -> {})    //nosniff
+                        .xssProtection(xssProtection ->xssProtection.disable())
+                        .contentSecurityPolicy(csp ->
+                                //csp.policyDirectives("default-src 'self'; script-src 'self';")    //CSP
+                                csp.policyDirectives("script-src 'self';")    //CSP
+                        )
+        );
+
 
         return http.build();
     }

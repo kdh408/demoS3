@@ -152,8 +152,8 @@ public class BoardController {
             }
         }
 
-        //String filePath = System.getProperty("user.dir")+"/src/main/resources/static"+board.getFilepath();
-        String filePath = "/app/src/main/resources/static" + board.getFilepath(); //EC2
+        String filePath = System.getProperty("user.dir")+"/src/main/resources/static"+board.getFilepath();
+        //String filePath = "/app/src/main/resources/static" + board.getFilepath(); //EC2
 
         Path path=Paths.get(filePath).normalize();
 
