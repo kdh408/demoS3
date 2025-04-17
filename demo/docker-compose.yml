@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.demo
-    env_file: .envdocke
+    env_file: .env
     ports:
       - "3000:3000"
     environment:
