@@ -74,13 +74,25 @@ public class SecurityConfig {
                 headers
                         //https인 경우 설정 필요 .httpStrictTransportSecurity()
                         .contentTypeOptions(contentType -> {})    //nosniff
-                        .xssProtection(xssProtection ->xssProtection.disable())
-                        .contentSecurityPolicy(csp ->
-                                //csp.policyDirectives("default-src 'self'; script-src 'self';")    //CSP
-                                csp.policyDirectives("script-src 'self';")    //CSP
+                        .contentSecurityPolicy(csp ->            //CSP
+                                csp.policyDirectives("default-src 'self';"+
+                                        "script-src 'self' https://cdn.jsdelivr.net; " +
+                                        "style-src 'self' 'unsafe-inline'; " +
+                                        "img-src 'self' data:; " +
+                                        "font-src 'self'; " +
+                                        "object-src 'none'; " +
+                                        "frame-ancestors 'none';")
                         )
         );
 
+        //HSTS 설정 (https에 적용)
+        http.headers(headers ->
+                headers
+                        .httpStrictTransportSecurity(hsts ->
+                                hsts.includeSubDomains(true)
+                                        .preload(true)
+                                        .maxAgeInSeconds(864000))
+        );
 
         return http.build();
     }

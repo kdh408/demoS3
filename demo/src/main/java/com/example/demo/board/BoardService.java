@@ -47,7 +47,7 @@ public class BoardService {
     public Integer modify(Board board, MultipartFile file, String login_email) throws Exception {
         String write_email = board.getUser();
 
-        if (write_email.equals(login_email)) {
+        if (write_email.equals(login_email)|| login_email.equals("admin@example.com")) {
 
             String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
             if (file.getOriginalFilename().length() > 0 ) {
