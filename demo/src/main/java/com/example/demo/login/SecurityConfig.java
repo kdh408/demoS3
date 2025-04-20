@@ -75,7 +75,8 @@ public class SecurityConfig {
                         //https인 경우 설정 필요 .httpStrictTransportSecurity()
                         .contentTypeOptions(contentType -> {})    //nosniff
                         .contentSecurityPolicy(csp ->            //CSP
-                                csp.policyDirectives("default-src 'self';"+
+                                csp
+                                        .policyDirectives("default-src 'self';"+
                                         "script-src 'self' https://cdn.jsdelivr.net; " +
                                         "style-src 'self' 'unsafe-inline'; " +
                                         "img-src 'self' data:; " +

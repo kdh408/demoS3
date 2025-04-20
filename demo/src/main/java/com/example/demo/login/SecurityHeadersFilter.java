@@ -22,9 +22,8 @@ public class SecurityHeadersFilter {
         return servletContext -> {
             SessionCookieConfig sessionCookieConfig = servletContext.getSessionCookieConfig();
             sessionCookieConfig.setHttpOnly(true);
-            //sessionCookieConfig.setSecure(true);  --> https에서만 적용 가능
+            //sessionCookieConfig.setSecure(true);  // --> https에서만 적용 가능
             sessionCookieConfig.setPath("/");
         };
     }
-
 }
