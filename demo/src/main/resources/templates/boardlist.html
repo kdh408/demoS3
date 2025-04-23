@@ -130,12 +130,9 @@
     </table>
 
     <div class="pagination">
-        <!--  게시글 없을 경우 예외 처리해줌! -->
-        <th:block th:if="${startPage != null and endPage != null}">
-            <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
-                <a th:if="${page != nowPage}" th:href="@{/board/list(page=${page - 1}, searchKeyword=${param.searchKeyword})}" th:text="${page}"></a>
-                <strong th:if="${page == nowPage}" th:text="${page}" style="color: red"></strong>
-            </th:block>
+        <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+            <a th:if="${page != nowPage}" th:href="@{/board/list(page=${page - 1}, searchKeyword=${param.searchKeyword})}" th:text="${page}"></a>
+            <strong th:if="${page == nowPage}" th:text="${page}" style="color: red"></strong>
         </th:block>
     </div>
 </div>

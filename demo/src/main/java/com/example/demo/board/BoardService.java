@@ -20,10 +20,10 @@ public class BoardService {
     //글 작성
     public void write(Board board, MultipartFile file, String email) throws Exception {
 
-        //String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
+        String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
 
         if (file.getOriginalFilename().length() > 0 ) {
-            String projectPath = "/app/src/main/resources/static/files";
+        //    String projectPath = "/app/src/main/resources/static/files";
 
             String fileName = file.getOriginalFilename();
             File saveFile = new File(projectPath, fileName);
@@ -49,9 +49,9 @@ public class BoardService {
 
         if (write_email.equals(login_email)|| login_email.equals("admin@example.com")) {
 
-            //String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
+            String projectPath = System.getProperty("user.dir")+"/src/main/resources/static/files";
             if (file.getOriginalFilename().length() > 0 ) {
-                String projectPath = "/app/src/main/resources/static/files";
+            //    String projectPath = "/app/src/main/resources/static/files";
 
                 String fileName = file.getOriginalFilename();
                 File saveFile = new File(projectPath, fileName);

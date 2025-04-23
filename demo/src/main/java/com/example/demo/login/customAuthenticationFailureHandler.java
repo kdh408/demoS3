@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Collections;
 
 
 @Component
@@ -22,11 +23,20 @@ public class customAuthenticationFailureHandler implements AuthenticationFailure
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException, ServletException {
+                                        AuthenticationException exception) throws IOException {
 
         String loginId = request.getParameter("username"); // 로그인 시도한 이메일
-        Login user = loginRepository.findByEmail(loginId)
-                .orElseThrow(()->new UsernameNotFoundException("Invalid username or password")); //사용자가 존재하지 않는 경우 예외처리
+       // Login user = loginRepository.findByEmail(loginId)
+       //         .orElseThrow(() -> new UsernameNotFoundException("Invalid username or passsword"));
+
+
+        Login user = loginRepository.findByEmail(loginId).orElse(null);
+
+        if(user==null){
+            request.getSession().setAttribute("errorMessage", "!!로그인 실패!! " + "로그인 시도 제한 횟수는 5회입니다.");
+            response.sendRedirect("/user/login");
+        }
+
 
         //로그인 횟수 5회 이상
         if (user.getFailedAttempts() >= 5) {
@@ -43,7 +53,7 @@ public class customAuthenticationFailureHandler implements AuthenticationFailure
                 loginRepository.save(user);
                 request.getSession().setAttribute("errorMessage", "로그인 실패"+ user.getFailedAttempts()+"/5 -> 계정 잠김. 관리자 문의 바람");
             }else{
-                request.getSession().setAttribute("errorMessage", "로그인 실패 " + user.getFailedAttempts() + "/5");
+                request.getSession().setAttribute("errorMessage", "!!로그인 실패!! " + "로그인 시도 제한 횟수는 5회입니다.");
             }
 
             response.sendRedirect("/user/login"); // 로그인 페이지로 리디렉트
